@@ -1,7 +1,7 @@
 # Hack The Box "TwoMillion" Writeup
-##Reconnaissance:
+## Reconnaissance:
 IP address given is 10.129.229.66. Is up and can be pinged.
-##Enumeration:
+## Enumeration:
 I started with an Nmap scan to identify open ports. Command used was: `nmap -sC -sV -p- -T4 10.129.229.66`
 Full output below.
 ```
