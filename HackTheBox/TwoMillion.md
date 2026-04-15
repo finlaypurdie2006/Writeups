@@ -309,7 +309,7 @@ root@2million:/root# cat root.txt
 8b6df6d0c12c96284cbc8a604dd4c235
 ```
 And thats it! That was my enumeration and exploitation of the "2MILLION" box from htb labs.
-##Remidation 
+## Remidation 
 Some important factors to fix immediately are the ability to post the admin configuration settings as an unpriviledged user. 
 This will prevent the same attack from being replicated by bad actors. Other paths also need to be tweaking,
 Such as being able to verify permissions via is_admin variable. These all stem from a lack of input sanitisation.
