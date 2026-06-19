@@ -1,0 +1,69 @@
+{
+  "summary": "The target is a Linux system running nginx 1.24.0 on ports 80 and 443, redirecting to kobold.htb, with an additional Golang HTTP service on port 3552. SSH is exposed on port 22. The system lacks critical security headers and uses a self-signed certificate with a long validity period. DNS resolution issues prevent full assessment of the kobold.htb domain.",
+  "risk_level": "Medium",
+  "open_ports": [
+    {
+      "port": "22",
+      "service": "ssh",
+      "version": "OpenSSH 9.6p1 Ubuntu 3ubuntu13.15",
+      "note": "Standard SSH service"
+    },
+    {
+      "port": "80",
+      "service": "http",
+      "version": "nginx 1.24.0 (Ubuntu)",
+      "note": "HTTP traffic redirects to https://kobold.htb/"
+    },
+    {
+      "port": "443",
+      "service": "https",
+      "version": "nginx 1.24.0 (Ubuntu)",
+      "note": "HTTPS with self-signed certificate for kobold.htb"
+    },
+    {
+      "port": "3552",
+      "service": "http",
+      "version": "Golang net/http server",
+      "note": "Custom web application, serves HTML with cache-control headers"
+    }
+  ],
+  "findings": [
+    {
+      "title": "Missing Critical Security Headers",
+      "severity": "Medium",
+      "description": "Multiple recommended HTTP security headers are not implemented on the nginx server, including Content-Security-Policy, X-Content-Type-Options, Strict-Transport-Security, Referrer-Policy, and Permissions-Policy.",
+      "evidence": "Nikto report: 'Suggested security header missing: referrer-policy', 'content-security-policy', 'x-content-type-options', 'permissions-policy', 'strict-transport-security'",
+      "recommendation": "Configure nginx to include security headers: add_header Strict-Transport-Security, Content-Security-Policy, X-Content-Type-Options: nosniff, Referrer-Policy, and Permissions-Policy directives."
+    },
+    {
+      "title": "Self-Signed TLS Certificate with Extended Validity",
+      "severity": "Low",
+      "description": "The SSL certificate for kobold.htb is self-signed and valid for nearly 100 years (2026-03-15 to 2125-02-19), which is unusual and may indicate misconfiguration.",
+      "evidence": "SSL certificate subject: commonName=kobold.htb, validity period 2026-03-15T15:08:55 to 2125-02-19T15:08:55",
+      "recommendation": "Replace with a properly signed certificate from a trusted Certificate Authority and use standard validity periods (typically 1 year)."
+    },
+    {
+      "title": "Hostname Resolution Dependency",
+      "severity": "Low",
+      "description": "The nginx server redirects all traffic to https://kobold.htb/, but the hostname cannot be resolved from the scanning location, preventing access via hostname and requiring hosts file modification or DNS configuration.",
+      "evidence": "Whatweb error: 'no address for kobold.htb'; both HTTP and HTTPS redirects point to https://kobold.htb/",
+      "recommendation": "Ensure DNS records are properly configured or document the hostname requirement for access. For testing, add the entry to /etc/hosts."
+    },
+    {
+      "title": "Unidentified Golang Web Service on Port 3552",
+      "severity": "Low",
+      "description": "A Golang net/http server is running on port 3552 with HTML content and API endpoints. The application purpose and security posture are unclear.",
+      "evidence": "Nmap fingerprint shows Golang HTTP server responding with HTML containing references to /api/app-images/favicon and /app.webmanifest",
+      "recommendation": "Document the purpose and security controls of this service. Review application code and API endpoints for vulnerabilities."
+    },
+    {
+      "title": "Deprecated X-Frame-Options Header in Use",
+      "severity": "Low",
+      "description": "The server returns X-Frame-Options header which is deprecated in favor of Content-Security-Policy frame-ancestors directive.",
+      "evidence": "Nikto report: 'X-Frame-Options header is deprecated and was replaced with the Content-Security-Policy HTTP header with the frame-ancestors directive'",
+      "recommendation": "Migrate from X-Frame-Options to Content-Security-Policy frame-ancestors directive for modern clickjacking protection."
+    }
+  ],
+  "subdomains": [],
+  "directories": []
+}

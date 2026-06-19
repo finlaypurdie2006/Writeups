@@ -1,0 +1,73 @@
+{
+  "network": {
+    "target": "10.129.28.204",
+    "command": "nmap -sV -sC -p 1-9999 -oX /tmp/tmp3c_6uxkk.xml 10.129.28.204",
+    "raw_stdout": "Starting Nmap 7.98 ( https://nmap.org ) at 2026-06-19 14:41 +0100\nNmap scan report for 10.129.28.204\nHost is up (0.016s latency).\nNot shown: 9995 closed tcp ports (reset)\nPORT     STATE SERVICE  VERSION\n22/tcp   open  ssh      OpenSSH 9.6p1 Ubuntu 3ubuntu13.15 (Ubuntu Linux; protocol 2.0)\n| ssh-hostkey: \n|   256 8c:45:12:36:03:61:de:0f:0b:2b:c3:9b:2a:92:59:a1 (ECDSA)\n|_  256 d2:3c:bf:ed:55:4a:52:13:b5:34:d2:fb:8f:e4:93:bd (ED25519)\n80/tcp   open  http     nginx 1.24.0 (Ubuntu)\n|_http-server-header: nginx/1.24.0 (Ubuntu)\n|_http-title: Did not follow redirect to https://kobold.htb/\n443/tcp  open  ssl/http nginx 1.24.0 (Ubuntu)\n| ssl-cert: Subject: commonName=kobold.htb\n| Subject Alternative Name: DNS:kobold.htb, DNS:*.kobold.htb\n| Not valid before: 2026-03-15T15:08:55\n|_Not valid after:  2125-02-19T15:08:55\n|_http-server-header: nginx/1.24.0 (Ubuntu)\n|_ssl-date: TLS randomness does not represent time\n|_http-title: Did not follow redirect to https://kobold.htb/\n| tls-alpn: \n|   http/1.1\n|   http/1.0\n|_  http/0.9\n3552/tcp open  http     Golang net/http server\n|_http-title: Site doesn't have a title (text/html; charset=utf-8).\n| fingerprint-strings: \n|   GenericLines: \n|     HTTP/1.1 400 Bad Request\n|     Content-Type: text/plain; charset=utf-8\n|     Connection: close\n|     Request\n|   GetRequest, HTTPOptions: \n|     HTTP/1.0 200 OK\n|     Accept-Ranges: bytes\n|     Cache-Control: no-cache, no-store, must-revalidate\n|     Content-Length: 2081\n|     Content-Type: text/html; charset=utf-8\n|     Expires: 0\n|     Pragma: no-cache\n|     Date: Fri, 19 Jun 2026 13:41:33 GMT\n|     <!doctype html>\n|     <html lang=\"%lang%\">\n|     <head>\n|     <meta charset=\"utf-8\" />\n|     <meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\" />\n|     <meta http-equiv=\"Pragma\" content=\"no-cache\" />\n|     <meta http-equiv=\"Expires\" content=\"0\" />\n|     <link rel=\"icon\" href=\"/api/app-images/favicon\" />\n|     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover\" />\n|     <link rel=\"manifest\" href=\"/app.webmanifest\" />\n|     <meta name=\"theme-color\" content=\"oklch(1 0 0)\" media=\"(prefers-color-scheme: light)\" />\n|     <meta name=\"theme-color\" content=\"oklch(0.141 0.005 285.823)\" media=\"(prefers-color-scheme: dark)\" />\n|_    <link rel=\"modu\n1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :\nSF-Port3552-TCP:V=7.98%I=7%D=6/19%Time=6A35470D%P=x86_64-pc-linux-gnu%r(Ge\nSF:nericLines,67,\"HTTP/1\\.1\\x20400\\x20Bad\\x20Request\\r\\nContent-Type:\\x20t\nSF:ext/plain;\\x20charset=utf-8\\r\\nConnection:\\x20close\\r\\n\\r\\n400\\x20Bad\\x\nSF:20Request\")%r(GetRequest,8FF,\"HTTP/1\\.0\\x20200\\x20OK\\r\\nAccept-Ranges:\\\nSF:x20bytes\\r\\nCache-Control:\\x20no-cache,\\x20no-store,\\x20must-revalidate\nSF:\\r\\nContent-Length:\\x202081\\r\\nContent-Type:\\x20text/html;\\x20charset=u\nSF:tf-8\\r\\nExpires:\\x200\\r\\nPragma:\\x20no-cache\\r\\nDate:\\x20Fri,\\x2019\\x20\nSF:Jun\\x202026\\x2013:41:33\\x20GMT\\r\\n\\r\\n<!doctype\\x20html>\\n<html\\x20lang\nSF:=\\\"%lang%\\\">\\n\\t<head>\\n\\t\\t<meta\\x20charset=\\\"utf-8\\\"\\x20/>\\n\\t\\t<meta\nSF:\\x20http-equiv=\\\"Cache-Control\\\"\\x20content=\\\"no-cache,\\x20no-store,\\x2\nSF:0must-revalidate\\\"\\x20/>\\n\\t\\t<meta\\x20http-equiv=\\\"Pragma\\\"\\x20content\nSF:=\\\"no-cache\\\"\\x20/>\\n\\t\\t<meta\\x20http-equiv=\\\"Expires\\\"\\x20content=\\\"0\nSF:\\\"\\x20/>\\n\\t\\t<link\\x20rel=\\\"icon\\\"\\x20href=\\\"/api/app-images/favicon\\\"\nSF:\\x20/>\\n\\t\\t<meta\\x20name=\\\"viewport\\\"\\x20content=\\\"width=device-width,\nSF:\\x20initial-scale=1,\\x20maximum-scale=1,\\x20viewport-fit=cover\\\"\\x20/>\\\nSF:n\\t\\t<link\\x20rel=\\\"manifest\\\"\\x20href=\\\"/app\\.webmanifest\\\"\\x20/>\\n\\t\\\nSF:t<meta\\x20name=\\\"theme-color\\\"\\x20content=\\\"oklch\\(1\\x200\\x200\\)\\\"\\x20m\nSF:edia=\\\"\\(prefers-color-scheme:\\x20light\\)\\\"\\x20/>\\n\\t\\t<meta\\x20name=\\\"\nSF:theme-color\\\"\\x20content=\\\"oklch\\(0\\.141\\x200\\.005\\x20285\\.823\\)\\\"\\x20m\nSF:edia=\\\"\\(prefers-color-scheme:\\x20dark\\)\\\"\\x20/>\\n\\t\\t\\n\\t\\t<link\\x20re\nSF:l=\\\"modu\")%r(HTTPOptions,8FF,\"HTTP/1\\.0\\x20200\\x20OK\\r\\nAccept-Ranges:\\\nSF:x20bytes\\r\\nCache-Control:\\x20no-cache,\\x20no-store,\\x20must-revalidate\nSF:\\r\\nContent-Length:\\x202081\\r\\nContent-Type:\\x20text/html;\\x20charset=u\nSF:tf-8\\r\\nExpires:\\x200\\r\\nPragma:\\x20no-cache\\r\\nDate:\\x20Fri,\\x2019\\x20\nSF:Jun\\x202026\\x2013:41:33\\x20GMT\\r\\n\\r\\n<!doctype\\x20html>\\n<html\\x20lang\nSF:=\\\"%lang%\\\">\\n\\t<head>\\n\\t\\t<meta\\x20charset=\\\"utf-8\\\"\\x20/>\\n\\t\\t<meta\nSF:\\x20http-equiv=\\\"Cache-Control\\\"\\x20content=\\\"no-cache,\\x20no-store,\\x2\nSF:0must-revalidate\\\"\\x20/>\\n\\t\\t<meta\\x20http-equiv=\\\"Pragma\\\"\\x20content\nSF:=\\\"no-cache\\\"\\x20/>\\n\\t\\t<meta\\x20http-equiv=\\\"Expires\\\"\\x20content=\\\"0\nSF:\\\"\\x20/>\\n\\t\\t<link\\x20rel=\\\"icon\\\"\\x20href=\\\"/api/app-images/favicon\\\"\nSF:\\x20/>\\n\\t\\t<meta\\x20name=\\\"viewport\\\"\\x20content=\\\"width=device-width,\nSF:\\x20initial-scale=1,\\x20maximum-scale=1,\\x20viewport-fit=cover\\\"\\x20/>\\\nSF:n\\t\\t<link\\x20rel=\\\"manifest\\\"\\x20href=\\\"/app\\.webmanifest\\\"\\x20/>\\n\\t\\\nSF:t<meta\\x20name=\\\"theme-color\\\"\\x20content=\\\"oklch\\(1\\x200\\x200\\)\\\"\\x20m\nSF:edia=\\\"\\(prefers-color-scheme:\\x20light\\)\\\"\\x20/>\\n\\t\\t<meta\\x20name=\\\"\nSF:theme-color\\\"\\x20content=\\\"oklch\\(0\\.141\\x200\\.005\\x20285\\.823\\)\\\"\\x20m\nSF:edia=\\\"\\(prefers-color-scheme:\\x20dark\\)\\\"\\x20/>\\n\\t\\t\\n\\t\\t<link\\x20re\nSF:l=\\\"modu\");\nService Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel\n\nService detection performed. Please report any incorrect results at https://nmap.org/submit/ .\nNmap done: 1 IP address (1 host up) scanned in 33.16 seconds\n",
+    "raw_stderr": "",
+    "hosts": [
+      {
+        "ip": "10.129.28.204",
+        "ports": [
+          {
+            "port": "22",
+            "protocol": "tcp",
+            "state": "open",
+            "service": "ssh",
+            "product": "OpenSSH",
+            "version": "9.6p1 Ubuntu 3ubuntu13.15"
+          },
+          {
+            "port": "80",
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http",
+            "product": "nginx",
+            "version": "1.24.0"
+          },
+          {
+            "port": "443",
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http",
+            "product": "nginx",
+            "version": "1.24.0"
+          },
+          {
+            "port": "3552",
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http",
+            "product": "Golang net/http server",
+            "version": ""
+          }
+        ]
+      }
+    ]
+  },
+  "web": {
+    "subfinder": {
+      "command": "",
+      "stdout": "",
+      "stderr": "no domain configured, skipped",
+      "returncode": -1
+    },
+    "whatweb": {
+      "command": "whatweb -a 3 10.129.28.204",
+      "stdout": "\u001b[1m\u001b[34mhttp://10.129.28.204\u001b[0m [301 Moved Permanently] \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mRESERVED\u001b[0m][\u001b[1m\u001b[31mZZ\u001b[0m], \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[31mUbuntu Linux\u001b[0m][\u001b[1m\u001b[36mnginx/1.24.0 (Ubuntu)\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m10.129.28.204\u001b[0m], \u001b[1mRedirectLocation\u001b[0m[\u001b[0m\u001b[22mhttps://kobold.htb/\u001b[0m], \u001b[1mTitle\u001b[0m[\u001b[1m\u001b[33m301 Moved Permanently\u001b[0m], \u001b[1mnginx\u001b[0m[\u001b[1m\u001b[32m1.24.0\u001b[0m]\n\u001b[1m\u001b[34mhttps://10.129.28.204\u001b[0m [302 Found] \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mRESERVED\u001b[0m][\u001b[1m\u001b[31mZZ\u001b[0m], \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[31mUbuntu Linux\u001b[0m][\u001b[1m\u001b[36mnginx/1.24.0 (Ubuntu)\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m10.129.28.204\u001b[0m], \u001b[1mRedirectLocation\u001b[0m[\u001b[0m\u001b[22mhttps://kobold.htb/\u001b[0m], \u001b[1mTitle\u001b[0m[\u001b[1m\u001b[33m302 Found\u001b[0m], \u001b[1mnginx\u001b[0m[\u001b[1m\u001b[32m1.24.0\u001b[0m]\n",
+      "stderr": "\u001b[1m\u001b[31mERROR Opening: https://kobold.htb/ - no address for kobold.htb\u001b[0m\n",
+      "returncode": 0
+    },
+    "nikto": {
+      "command": "nikto -h 10.129.28.204",
+      "stdout": "- Nikto v2.6.0\n---------------------------------------------------------------------------\n+ Target IP:          10.129.28.204\n+ Target Hostname:    10.129.28.204\n+ Target Port:        80\n+ Platform:           Unknown\n+ Start Time:         2026-06-19 14:42:02 (GMT1)\n---------------------------------------------------------------------------\n+ Server: nginx/1.24.0 (Ubuntu)\n+ No CGI Directories found (use '-C all' to force check all possible dirs). CGI tests skipped.\n+ [013587] /: Suggested security header missing: referrer-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy\n+ [013587] /: Suggested security header missing: content-security-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP\n+ [013587] /: Suggested security header missing: x-content-type-options. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options\n+ [013587] /: Suggested security header missing: permissions-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy\n+ [013587] /: Suggested security header missing: strict-transport-security. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security\n+ [007342] /: X-Frame-Options header is deprecated and was replaced with the Content-Security-Policy HTTP header with the frame-ancestors directive. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options\n+ [007352] /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/\n+ 8219 requests: 0 errors and 7 items reported on the remote host\n+ End Time:           2026-06-19 14:44:59 (GMT1) (177 seconds)\n---------------------------------------------------------------------------\n+ 1 host(s) tested\n",
+      "stderr": "+ ERROR: Failed to check for updates: 403\n",
+      "returncode": 0
+    },
+    "gobuster": {
+      "command": "gobuster dir -u http://10.129.28.204 -w /usr/share/wordlists/dirb/common.txt -q",
+      "stdout": "",
+      "stderr": "2026/06/19 14:44:59 the server returns a status code that matches the provided options for non existing urls. http://10.129.28.204/a12454f7-48b3-49c0-aac0-279806d2a411 => 301 (redirect to https://kobold.htb/a12454f7-48b3-49c0-aac0-279806d2a411) (Length: 178). Please exclude the response length or the status code or set the wildcard option.. To continue please exclude the status code or the length\n",
+      "returncode": 1
+    }
+  }
+}
