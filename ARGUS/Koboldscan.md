@@ -49,8 +49,7 @@ httpx, pydantic, pillow, and supporting libraries
 ## 4. API Configuration
 The Anthropic API key was configured using environment variables:
 ```
-export ANTHROPIC_API_KEY="your-key-here"
-export ANTHROPIC_API_KEY="sk-ant-api03-..."
+export ANTHROPIC_API_KEY="myapikey..."
 ```
 This enables authentication with the Claude API for AI-based analysis of reconnaissance data.
 
